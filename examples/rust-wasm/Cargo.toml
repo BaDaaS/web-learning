@@ -10,7 +10,15 @@ crate-type = ["cdylib"]
 wasm-bindgen = { workspace = true }
 js-sys = { workspace = true }
 wasm-bindgen-futures = { workspace = true }
-console_error_panic_hook = { workspace = true }
+console_error_panic_hook = { workspace = true, optional = true }
+rayon = "1.10"
+crossbeam-channel = "0.5"
+num_cpus = "1.16"
+instant = { version = "0.1", features = ["wasm-bindgen"] }
+
+[dependencies.wee_alloc]
+version = "0.4"
+optional = true
 
 [dependencies.web-sys]
 workspace = true
@@ -18,4 +26,8 @@ features = [
   "console",
   "Window",
 ]
+
+[features]
+default = ["console_error_panic_hook"]
+wee_alloc = ["dep:wee_alloc"]
 

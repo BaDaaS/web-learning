@@ -13,17 +13,15 @@ contexts.
 ## MessageChannel Basics
 
 ```typescript
-// Main thread
-const channel = new MessageChannel();
-const { port1, port2 } = channel;
+const { MessageChannel } = require('worker_threads');
 
-// Keep port1, send port2 to worker
-worker.postMessage({ type: 'init', port: port2 }, [port2]);
+const { port1, port2 } = new MessageChannel();
 
-// Listen on port1
-port1.onmessage = ({ data }) => {
-  console.log('Received from worker:', data);
-};
+port1.on('message', (message) => {
+  console.log('Received:', message);
+});
+
+port2.postMessage('Hello, world!');
 ```
 
 <Tabs groupId="platform">

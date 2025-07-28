@@ -102,6 +102,141 @@ Each technical page should include:
 - Show real-world patterns, not toy examples
 - Cover edge cases and error handling
 
+## Code Documentation Guidelines
+
+### Example File Organization
+
+All code examples should be stored in the `examples/` directory with proper
+organization:
+
+```
+examples/
+├── workers-concurrency/     # Worker and concurrency patterns
+├── sdk-ts-wasm/            # TypeScript SDK examples
+├── rust-wasm/              # Rust WebAssembly examples
+├── cross-origin-security/  # Security-related examples
+├── debugging/              # Debugging examples
+└── exercises/              # Exercise solutions
+```
+
+### Example File Naming Convention
+
+- Use descriptive filenames with `.example.ts` extension
+- Examples: `message-channel-basic.example.ts`,
+  `backpressure-patterns.example.ts`
+- Group related examples in the same file when logical
+- Keep individual examples focused on a single concept
+
+### Example File Structure
+
+Each example file should follow this structure:
+
+```typescript
+/**
+ * [Title] - Brief Description
+ *
+ * This example demonstrates [key concept] including [specific features].
+ * Use cases: [when to use this pattern]
+ */
+
+// Main implementation with clear comments
+class ExampleImplementation {
+  // Implementation details
+}
+
+// Helper functions and utilities
+function helperFunction() {
+  // Implementation
+}
+
+// Usage examples showing practical application
+function usageExample() {
+  // Demonstrate how to use the implementation
+}
+
+// Export all relevant classes and functions
+export { ExampleImplementation, helperFunction, usageExample };
+```
+
+### Documentation Integration
+
+#### Using CodeBlock Component
+
+Replace inline code blocks in MDX files with CodeBlock components:
+
+```mdx
+<CodeBlock
+  language="typescript"
+  title="Descriptive Title"
+  file="examples/category/filename.example.ts"
+  lines="10-25"
+/>
+```
+
+#### CodeBlock Parameters
+
+- `language`: Programming language for syntax highlighting
+- `title`: Descriptive title explaining what the code does
+- `file`: Relative path from project root to example file
+- `lines`: Specific line ranges to display (optional)
+
+### Code Quality Standards
+
+#### TypeScript Requirements
+
+- Use strict TypeScript configuration
+- Include proper type annotations
+- Handle error cases explicitly
+- Use modern ES2020+ features appropriately
+
+#### Documentation Comments
+
+- Include JSDoc comments for classes and functions
+- Explain complex algorithms or patterns
+- Document parameter types and return values
+- Include usage examples in comments when helpful
+
+#### Example Organization
+
+- **Single Concept**: Each example should focus on one main concept
+- **Progressive Complexity**: Start with basic examples, build to advanced
+- **Real-World Applicable**: Examples should reflect actual use cases
+- **Error Handling**: Include proper error handling patterns
+- **Performance Considerations**: Comment on performance implications
+
+### Testing Example Code
+
+#### Compilation Verification
+
+All example code must compile successfully:
+
+- Examples are automatically checked in CI via `make check-examples`
+- Use `make compile-examples` locally to verify compilation
+- Fix any TypeScript errors before committing
+
+#### Example Testing
+
+- Examples should be self-contained and runnable
+- Include example usage functions that demonstrate the code
+- Test edge cases and error conditions
+- Verify examples work in both Node.js and browser environments when applicable
+
+### Maintenance Guidelines
+
+#### Keeping Examples Current
+
+- Review examples when dependencies are updated
+- Ensure compatibility with latest TypeScript versions
+- Update examples when better patterns emerge
+- Remove deprecated patterns and mark alternatives
+
+#### Documentation Synchronization
+
+- Update documentation when example code changes
+- Ensure CodeBlock line references remain accurate
+- Verify all referenced files exist and compile
+- Check that example titles match the actual implementation
+
 ## Configuration Notes
 
 ### Repository Setup
