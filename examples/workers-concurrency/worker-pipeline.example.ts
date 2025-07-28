@@ -88,7 +88,7 @@ class WorkerPipeline {
 
   // Process multiple items concurrently
   async processBatch(items: any[]): Promise<any[]> {
-    const promises = items.map(item => this.process(item));
+    const promises = items.map((item) => this.process(item));
     return Promise.all(promises);
   }
 
@@ -148,7 +148,8 @@ class ManagedWorkerPipeline {
 
       // Update average latency
       this.metrics.averageLatency =
-        this.processingTimes.reduce((a, b) => a + b, 0) / this.processingTimes.length;
+        this.processingTimes.reduce((a, b) => a + b, 0) /
+        this.processingTimes.length;
     } else {
       this.metrics.errors++;
     }

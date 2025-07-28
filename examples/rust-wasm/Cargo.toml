@@ -4,30 +4,43 @@ version = "0.1.0"
 edition = "2021"
 
 [lib]
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "rlib"]
+
+[[bin]]
+name = "parallel-processing"
+path = "src/bin/parallel-processing.rs"
+
+[[bin]]
+name = "wasm-integration"
+path = "src/bin/wasm-integration.rs"
 
 [dependencies]
-wasm-bindgen = { workspace = true }
-js-sys = { workspace = true }
-wasm-bindgen-futures = { workspace = true }
+# WebAssembly dependencies
 console_error_panic_hook = { workspace = true, optional = true }
-rayon = "1.10"
+js-sys = { workspace = true }
+wasm-bindgen = { workspace = true }
+wasm-bindgen-futures = { workspace = true }
+
+# Parallel processing
 crossbeam-channel = "0.5"
-num_cpus = "1.16"
 instant = { version = "0.1", features = ["wasm-bindgen"] }
+num_cpus = "1.16"
+rayon = "1.10"
+
+# Binary dependencies
+clap = { version = "4.4", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.0", features = ["full"], optional = true }
 
 [dependencies.wee_alloc]
-version = "0.4"
 optional = true
+version = "0.4"
 
 [dependencies.web-sys]
+features = ["console", "Window"]
 workspace = true
-features = [
-  "console",
-  "Window",
-]
 
 [features]
 default = ["console_error_panic_hook"]
 wee_alloc = ["dep:wee_alloc"]
-
+tokio = ["dep:tokio"]

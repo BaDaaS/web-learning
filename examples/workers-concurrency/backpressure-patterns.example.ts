@@ -207,7 +207,9 @@ class AdaptiveBackpressureController {
   private adjustCredits() {
     if (this.processingTimes.length < this.maxSamples) return;
 
-    const avgTime = this.processingTimes.reduce((a, b) => a + b, 0) / this.processingTimes.length;
+    const avgTime =
+      this.processingTimes.reduce((a, b) => a + b, 0) /
+      this.processingTimes.length;
 
     // If processing is fast, increase credits
     if (avgTime < 100 && this.maxCredits < 20) {

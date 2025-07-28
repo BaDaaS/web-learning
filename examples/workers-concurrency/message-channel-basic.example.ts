@@ -91,4 +91,8 @@ function nodeMessageChannelExample() {
   */
 }
 
-export { initializeMessageChannel, setupWorkerMessagePort, nodeMessageChannelExample };
+export {
+  initializeMessageChannel,
+  setupWorkerMessagePort,
+  nodeMessageChannelExample,
+};

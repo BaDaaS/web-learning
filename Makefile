@@ -1,4 +1,9 @@
 # Web Learning Documentation Makefile
+#
+# Prerequisites:
+# - Node.js and npm (for TypeScript and documentation)
+# - Rust nightly toolchain (for examples and formatting)
+# - taplo (for TOML formatting): run 'make install-taplo' if not installed
 
 .PHONY: help
 help: ## Ask for help!
@@ -35,6 +40,7 @@ format: ## Format all code and documentation
 	npm run format
 	$(MAKE) format-md
 	$(MAKE) format-rust
+	$(MAKE) format-toml
 
 .PHONY: format-md
 format-md: ## Format markdown files to 80 characters
@@ -52,6 +58,7 @@ check-format: ## Check code formatting
 	npm run lint
 	$(MAKE) check-md
 	$(MAKE) check-rust-format
+	$(MAKE) check-toml-format
 
 .PHONY: check-md
 check-md: ## Check markdown file formatting
@@ -128,36 +135,128 @@ install-examples: ## Install dependencies for examples
 	@echo "Installing TypeScript dependencies for examples..."
 	@cd examples && npm install
 
+.PHONY: install-taplo
+install-taplo: ## Install taplo TOML formatter
+	@if command -v cargo >/dev/null 2>&1; then \
+		echo "Installing taplo..."; \
+		cargo install taplo-cli; \
+		echo "taplo installed successfully."; \
+	else \
+		echo "Cargo not found - cannot install taplo"; \
+	fi
+
 .PHONY: compile-examples
 compile-examples: ## Compile all example scripts to check they're valid
 	@echo "Compiling TypeScript examples..."
 	@cd examples && npm run typecheck
 	@echo "Checking Rust examples..."
 	@if command -v cargo >/dev/null 2>&1; then \
-		cargo check --workspace && \
-		cargo clippy --workspace --all-targets --all-features -- -D warnings; \
+		cd examples/rust-wasm && \
+		cargo check --bins && \
+		cargo clippy --bins --all-targets --all-features -- -D warnings; \
 	else \
 		echo "Cargo not found - skipping Rust example compilation"; \
 	fi
 	@echo "All examples compiled successfully!"
 
+.PHONY: build-rust-examples
+build-rust-examples: ## Build Rust example binaries
+	@if command -v cargo >/dev/null 2>&1; then \
+		echo "Building Rust example binaries..."; \
+		cd examples/rust-wasm && cargo build --bins --release; \
+		echo "Rust binaries built successfully."; \
+	else \
+		echo "Cargo not found - skipping Rust binary build"; \
+	fi
+
+.PHONY: run-parallel-processing
+run-parallel-processing: build-rust-examples ## Run the parallel processing example
+	@if command -v cargo >/dev/null 2>&1; then \
+		echo "Running parallel processing example..."; \
+		./target/release/parallel-processing; \
+	else \
+		echo "Cargo not found - cannot run Rust examples"; \
+	fi
+
+.PHONY: run-wasm-integration
+run-wasm-integration: build-rust-examples ## Run the WASM integration example
+	@if command -v cargo >/dev/null 2>&1; then \
+		echo "Running WASM integration example..."; \
+		./target/release/wasm-integration; \
+	else \
+		echo "Cargo not found - cannot run Rust examples"; \
+	fi
+
+.PHONY: run-rust-examples
+run-rust-examples: ## Run all Rust examples
+	$(MAKE) run-parallel-processing
+	$(MAKE) run-wasm-integration
+
+.PHONY: run-parallel-processing-json
+run-parallel-processing-json: build-rust-examples ## Run parallel processing example with JSON output
+	@if command -v cargo >/dev/null 2>&1; then \
+		./target/release/parallel-processing --json; \
+	else \
+		echo "Cargo not found - cannot run Rust examples"; \
+	fi
+
+.PHONY: run-wasm-integration-json
+run-wasm-integration-json: build-rust-examples ## Run WASM integration example with JSON output
+	@if command -v cargo >/dev/null 2>&1; then \
+		./target/release/wasm-integration --json; \
+	else \
+		echo "Cargo not found - cannot run Rust examples"; \
+	fi
+
+.PHONY: benchmark-rust
+benchmark-rust: build-rust-examples ## Run Rust examples with benchmarking
+	@if command -v cargo >/dev/null 2>&1; then \
+		echo "Running Rust benchmarks..."; \
+		echo "=== Parallel Processing Benchmark ==="; \
+		./target/release/parallel-processing --benchmark; \
+		echo ""; \
+		echo "=== WASM Integration Benchmark ==="; \
+		./target/release/wasm-integration --simulate-wasm; \
+	else \
+		echo "Cargo not found - cannot run Rust benchmarks"; \
+	fi
+
 .PHONY: format-rust
 format-rust: ## Format Rust code
 	@if command -v cargo >/dev/null 2>&1; then \
 		echo "Formatting Rust code..."; \
-		cargo fmt --all; \
+		cd examples/rust-wasm && cargo fmt --all; \
 		echo "Rust code formatted."; \
 	else \
 		echo "Cargo not found - skipping Rust formatting"; \
+	fi
+
+.PHONY: format-toml
+format-toml: ## Format TOML files
+	@if command -v taplo >/dev/null 2>&1; then \
+		echo "Formatting TOML files..."; \
+		taplo format; \
+		echo "TOML files formatted."; \
+	else \
+		echo "taplo not found - skipping TOML formatting"; \
 	fi
 
 .PHONY: check-rust-format
 check-rust-format: ## Check Rust code formatting
 	@if command -v cargo >/dev/null 2>&1; then \
 		echo "Checking Rust code formatting..."; \
-		cargo fmt --all -- --check && echo "Rust formatting is correct."; \
+		cd examples/rust-wasm && cargo fmt --all -- --check && echo "Rust formatting is correct."; \
 	else \
 		echo "Cargo not found - skipping Rust format check"; \
+	fi
+
+.PHONY: check-toml-format
+check-toml-format: ## Check TOML files formatting
+	@if command -v taplo >/dev/null 2>&1; then \
+		echo "Checking TOML file formatting..."; \
+		taplo check && echo "TOML formatting is correct."; \
+	else \
+		echo "taplo not found - skipping TOML format check"; \
 	fi
 
 .PHONY: check-examples
