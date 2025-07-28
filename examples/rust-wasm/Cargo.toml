@@ -44,3 +44,6 @@ workspace = true
 default = ["console_error_panic_hook"]
 wee_alloc = ["dep:wee_alloc"]
 tokio = ["dep:tokio"]
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false

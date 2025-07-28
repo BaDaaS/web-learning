@@ -39,6 +39,9 @@ jobs:
       - name: Install taplo
         run: cargo install taplo-cli
 
+      - name: Install wasm-pack
+        run: cargo install wasm-pack
+
       - name: Install dependencies
         run: make install
 

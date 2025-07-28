@@ -4,6 +4,7 @@
 # - Node.js and npm (for TypeScript and documentation)
 # - Rust nightly toolchain (for examples and formatting)
 # - taplo (for TOML formatting): run 'make install-taplo' if not installed
+# - wasm-pack (for WebAssembly builds): run 'make install-wasm-pack' if not installed
 
 .PHONY: help
 help: ## Ask for help!
@@ -145,6 +146,16 @@ install-taplo: ## Install taplo TOML formatter
 		echo "Cargo not found - cannot install taplo"; \
 	fi
 
+.PHONY: install-wasm-pack
+install-wasm-pack: ## Install wasm-pack for WebAssembly builds
+	@if command -v cargo >/dev/null 2>&1; then \
+		echo "Installing wasm-pack..."; \
+		cargo install wasm-pack; \
+		echo "wasm-pack installed successfully."; \
+	else \
+		echo "Cargo not found - cannot install wasm-pack"; \
+	fi
+
 .PHONY: compile-examples
 compile-examples: ## Compile all example scripts to check they're valid
 	@echo "Compiling TypeScript examples..."
@@ -219,6 +230,44 @@ benchmark-rust: build-rust-examples ## Run Rust examples with benchmarking
 		./target/release/wasm-integration --simulate-wasm; \
 	else \
 		echo "Cargo not found - cannot run Rust benchmarks"; \
+	fi
+
+.PHONY: build-wasm
+build-wasm: ## Build Rust code as WebAssembly using wasm-pack
+	@if command -v wasm-pack >/dev/null 2>&1; then \
+		echo "Building WebAssembly package..."; \
+		cd examples/rust-wasm && wasm-pack build --target nodejs --out-dir pkg; \
+		echo "WebAssembly package built successfully."; \
+	else \
+		echo "wasm-pack not found - please install with 'make install-wasm-pack'"; \
+	fi
+
+.PHONY: build-wasm-web
+build-wasm-web: ## Build Rust code as WebAssembly for web browsers
+	@if command -v wasm-pack >/dev/null 2>&1; then \
+		echo "Building WebAssembly package for web..."; \
+		cd examples/rust-wasm && wasm-pack build --target web --out-dir pkg-web; \
+		echo "WebAssembly web package built successfully."; \
+	else \
+		echo "wasm-pack not found - please install with 'make install-wasm-pack'"; \
+	fi
+
+.PHONY: run-wasm-node
+run-wasm-node: build-wasm ## Build and run WebAssembly in Node.js
+	@if command -v node >/dev/null 2>&1; then \
+		echo "Running WebAssembly in Node.js..."; \
+		cd examples/rust-wasm && node wasm-node-runner.js; \
+	else \
+		echo "Node.js not found - cannot run WebAssembly"; \
+	fi
+
+.PHONY: test-wasm-node
+test-wasm-node: build-wasm ## Build and test WebAssembly functionality in Node.js
+	@if command -v node >/dev/null 2>&1; then \
+		echo "Testing WebAssembly functionality in Node.js..."; \
+		cd examples/rust-wasm && node wasm-test-runner.js; \
+	else \
+		echo "Node.js not found - cannot test WebAssembly"; \
 	fi
 
 .PHONY: format-rust

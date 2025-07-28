@@ -119,15 +119,24 @@ impl WasmModule {
 
     /// Internal asynchronous data transformation
     async fn async_transform(mut data: Vec<u8>) -> Result<Vec<u8>, JsValue> {
-        // Simulate async processing delay
-        let promise = Promise::new(&mut |resolve, _| {
-            let _timeout = js_sys::global()
-                .dyn_into::<web_sys::Window>()
-                .unwrap()
-                .set_timeout_with_callback_and_timeout_and_arguments_0(
+        // Simulate async processing delay using a simple Promise
+        let promise = Promise::new(&mut |resolve, _reject| {
+            // Try browser environment first (setTimeout via Window)
+            if let Ok(window) = js_sys::global().dyn_into::<web_sys::Window>() {
+                let _ = window.set_timeout_with_callback_and_timeout_and_arguments_0(
                     &resolve, 10, // 10ms delay
-                )
-                .unwrap();
+                );
+            } else {
+                // Node.js environment - use setTimeout from global object
+                let global = js_sys::global();
+                if let Ok(set_timeout) = js_sys::Reflect::get(&global, &"setTimeout".into()) {
+                    let set_timeout: js_sys::Function = set_timeout.dyn_into().unwrap();
+                    let _ = set_timeout.call2(&global, &resolve, &10.into());
+                } else {
+                    // Fallback: resolve immediately if no setTimeout available
+                    let _ = resolve.call0(&JsValue::UNDEFINED);
+                }
+            }
         });
 
         wasm_bindgen_futures::JsFuture::from(promise).await?;
