@@ -1,5 +1,5 @@
-import {themes as prismThemes} from 'prism-react-renderer';
-import type {Config} from '@docusaurus/types';
+import { themes as prismThemes } from 'prism-react-renderer';
+import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
 // Configuration constants - update these for your repository
@@ -9,7 +9,7 @@ const GITHUB_URL = `https://github.com/${GITHUB_ORG}/${GITHUB_REPO}`;
 
 const config: Config = {
   title: 'Web Learning',
-  tagline: 'Interviewers\' guide for TypeScript, Rust/WebAssembly & concurrency',
+  tagline: "Interviewers' guide for TypeScript, Rust/WebAssembly & concurrency",
   favicon: 'img/favicon.ico',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
@@ -162,7 +162,7 @@ const config: Config = {
       additionalLanguages: ['rust', 'toml', 'bash'],
     },
     mermaid: {
-      theme: {light: 'neutral', dark: 'dark'},
+      theme: { light: 'neutral', dark: 'dark' },
     },
   } satisfies Preset.ThemeConfig,
 };

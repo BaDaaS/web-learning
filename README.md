@@ -3,8 +3,8 @@
 **Interviewers' guide for TypeScript, Rust/WebAssembly & concurrency**
 
 A comprehensive documentation site for preparing interviewers on advanced web
-development topics including TypeScript SDKs, Rust/WebAssembly integration, worker
-patterns, cross-origin security, and full-stack debugging.
+development topics including TypeScript SDKs, Rust/WebAssembly integration,
+worker patterns, cross-origin security, and full-stack debugging.
 
 **[Visit the full documentation site →](https://BaDaaS.github.io/web-learning/)**
 
@@ -101,11 +101,12 @@ yarn format
 Update these values in `docusaurus.config.ts`:
 
 ```typescript
-const GITHUB_ORG = 'BaDaaS';          // Your GitHub organization
-const GITHUB_REPO = 'web-learning';   // Your repository name
+const GITHUB_ORG = 'BaDaaS'; // Your GitHub organization
+const GITHUB_REPO = 'web-learning'; // Your repository name
 ```
 
 This will automatically configure:
+
 - GitHub Pages URL: `https://BaDaaS.github.io/web-learning/`
 - Edit links and repository references
 - Footer links

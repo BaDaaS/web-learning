@@ -1,4 +1,4 @@
-import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
+import type { SidebarsConfig } from '@docusaurus/plugin-content-docs';
 
 const sidebars: SidebarsConfig = {
   mainSidebar: [
@@ -73,10 +73,7 @@ const sidebars: SidebarsConfig = {
     'exercises/pipeline-design-exercise',
     'exercises/wasm-oom-scenario',
   ],
-  questionsSidebar: [
-    'rubrics/interviewer-rubric',
-    'rubrics/quick-cheatsheet',
-  ],
+  questionsSidebar: ['rubrics/interviewer-rubric', 'rubrics/quick-cheatsheet'],
 };
 
 export default sidebars;

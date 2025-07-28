@@ -1,7 +1,10 @@
-import type {ReactNode} from 'react';
+import type { ReactNode } from 'react';
 import clsx from 'clsx';
 import Heading from '@theme/Heading';
 import styles from './styles.module.css';
+import TypeScriptWasmSvg from '@site/static/img/typescript-wasm.svg';
+import WorkersConcurrencySvg from '@site/static/img/workers-concurrency.svg';
+import SecurityDebuggingSvg from '@site/static/img/security-debugging.svg';
 
 type FeatureItem = {
   title: string;
@@ -12,18 +15,18 @@ type FeatureItem = {
 const FeatureList: FeatureItem[] = [
   {
     title: 'TypeScript SDK & WebAssembly',
-    Svg: require('@site/static/img/typescript-wasm.svg').default,
+    Svg: TypeScriptWasmSvg,
     description: (
       <>
-        Learn to design TypeScript SDKs that seamlessly wrap Rust/WebAssembly modules
-        for both Node.js and browser environments. Master API design patterns,
-        initialization strategies, and cross-platform compatibility.
+        Learn to design TypeScript SDKs that seamlessly wrap Rust/WebAssembly
+        modules for both Node.js and browser environments. Master API design
+        patterns, initialization strategies, and cross-platform compatibility.
       </>
     ),
   },
   {
     title: 'Workers & Concurrency',
-    Svg: require('@site/static/img/workers-concurrency.svg').default,
+    Svg: WorkersConcurrencySvg,
     description: (
       <>
         Master advanced concurrency patterns using Web Workers, MessagePorts,
@@ -34,18 +37,19 @@ const FeatureList: FeatureItem[] = [
   },
   {
     title: 'Security & Debugging',
-    Svg: require('@site/static/img/security-debugging.svg').default,
+    Svg: SecurityDebuggingSvg,
     description: (
       <>
         Navigate cross-origin security (CORS, COOP/COEP) and SharedArrayBuffer
-        requirements. Develop skills for debugging across TypeScript-WebAssembly-Runtime
-        boundaries with profiling and tracing techniques.
+        requirements. Develop skills for debugging across
+        TypeScript-WebAssembly-Runtime boundaries with profiling and tracing
+        techniques.
       </>
     ),
   },
 ];
 
-function Feature({title, Svg, description}: FeatureItem) {
+function Feature({ title, Svg, description }: FeatureItem) {
   return (
     <div className={clsx('col col--4')}>
       <div className="text--center">

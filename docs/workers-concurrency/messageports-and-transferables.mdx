@@ -7,8 +7,8 @@ import Expected from '@site/src/components/Expected';
 # MessagePort & Transferable Objects
 
 MessagePort and MessageChannel provide a powerful abstraction for bidirectional
-communication, while transferable objects enable zero-copy data transfer
-between contexts.
+communication, while transferable objects enable zero-copy data transfer between
+contexts.
 
 ## MessageChannel Basics
 
@@ -58,7 +58,7 @@ if (isMainThread) {
   const { port1, port2 } = new MessageChannel();
   const worker = new Worker(__filename, {
     transferList: [port2],
-    workerData: { port: port2 }
+    workerData: { port: port2 },
   });
 
   port1.on('message', (data) => {
@@ -88,18 +88,21 @@ for (let i = 0; i < view.length; i++) {
 }
 
 // Transfer to worker (zero-copy!)
-worker.postMessage({
-  type: 'process',
-  buffer: buffer
-}, [buffer]); // Transfer list
+worker.postMessage(
+  {
+    type: 'process',
+    buffer: buffer,
+  },
+  [buffer]
+); // Transfer list
 
 // ⚠️ buffer is now neutered (unusable) in main thread
 console.log(buffer.byteLength); // 0
 ```
 
 <Callout type="good" title="Zero-Copy Performance">
-Transferring ArrayBuffers moves ownership instead of copying data, enabling
-efficient processing of large datasets without memory duplication.
+  Transferring ArrayBuffers moves ownership instead of copying data, enabling
+  efficient processing of large datasets without memory duplication.
 </Callout>
 
 ### ImageData Transfer
@@ -115,10 +118,13 @@ canvas.height = 1080;
 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
 // Transfer for processing
-worker.postMessage({
-  type: 'processImage',
-  imageData: imageData
-}, [imageData.data.buffer]);
+worker.postMessage(
+  {
+    type: 'processImage',
+    imageData: imageData,
+  },
+  [imageData.data.buffer]
+);
 
 // Worker processes and returns
 worker.onmessage = ({ data }) => {
@@ -195,7 +201,7 @@ class BoundedMessageQueue<T> {
 
     if (this.queue.length >= this.maxSize) {
       // Queue is full, wait for space
-      await new Promise<void>(resolve => {
+      await new Promise<void>((resolve) => {
         this.waitingProducers.push(resolve);
       });
     }
@@ -217,7 +223,7 @@ class BoundedMessageQueue<T> {
     }
 
     // Queue is empty, wait for item
-    return new Promise<T>(resolve => {
+    return new Promise<T>((resolve) => {
       this.waitingConsumers.push(resolve);
     });
   }
@@ -254,15 +260,21 @@ class WorkerPipeline {
         this.channels[i] = new MessageChannel();
 
         // Connect current worker output to next worker input
-        this.stages[i].postMessage({
-          type: 'connect_output',
-          port: this.channels[i].port1
-        }, [this.channels[i].port1]);
+        this.stages[i].postMessage(
+          {
+            type: 'connect_output',
+            port: this.channels[i].port1,
+          },
+          [this.channels[i].port1]
+        );
 
-        this.stages[i + 1].postMessage({
-          type: 'connect_input',
-          port: this.channels[i].port2
-        }, [this.channels[i].port2]);
+        this.stages[i + 1].postMessage(
+          {
+            type: 'connect_input',
+            port: this.channels[i].port2,
+          },
+          [this.channels[i].port2]
+        );
       }
     }
   }
@@ -273,7 +285,7 @@ class WorkerPipeline {
       this.stages[0].postMessage({
         type: 'process',
         data,
-        requestId: Math.random()
+        requestId: Math.random(),
       });
 
       // Listen for result from last stage
@@ -320,8 +332,8 @@ class BatchTransferManager {
 ```
 
 <Question>
-How would you implement backpressure in a worker pipeline where each stage has
-different processing speeds?
+  How would you implement backpressure in a worker pipeline where each stage has
+  different processing speeds?
 </Question>
 
 <Expected>
@@ -338,18 +350,19 @@ Strong candidates should mention:
 
 They should also understand the trade-offs between throughput, latency, and
 memory usage.
+
 </Expected>
 
 ## Common Patterns
 
 <Callout type="good">
-Use MessagePorts for complex bidirectional communication patterns, especially
-when you need to establish multiple independent communication channels.
+  Use MessagePorts for complex bidirectional communication patterns, especially
+  when you need to establish multiple independent communication channels.
 </Callout>
 
 <Callout type="bad">
-Don't transfer the same ArrayBuffer multiple times - it becomes neutered after
-the first transfer. Clone the data if multiple recipients need it.
+  Don't transfer the same ArrayBuffer multiple times - it becomes neutered after
+  the first transfer. Clone the data if multiple recipients need it.
 </Callout>
 
 ## Signals of Mastery

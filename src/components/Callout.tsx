@@ -10,7 +10,7 @@ interface CalloutProps {
 const typeMapping = {
   good: { type: 'tip', title: 'Good Practice' },
   bad: { type: 'danger', title: 'Red Flag' },
-  note: { type: 'info', title: 'Note' }
+  note: { type: 'info', title: 'Note' },
 } as const;
 
 export default function Callout({ type, title, children }: CalloutProps) {
@@ -18,10 +18,7 @@ export default function Callout({ type, title, children }: CalloutProps) {
   const displayTitle = title || config.title;
 
   return (
-    <Admonition
-      type={config.type}
-      title={displayTitle}
-    >
+    <Admonition type={config.type} title={displayTitle}>
       {children}
     </Admonition>
   );

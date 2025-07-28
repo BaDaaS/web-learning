@@ -27,11 +27,9 @@ if (typeof SharedArrayBuffer !== 'undefined' && crossOriginIsolated) {
 }
 ```
 
-:::warning Security Trade-off
-Enabling cross-origin isolation prevents loading resources from other origins
-unless they explicitly opt-in with CORP headers. This can break third-party
-integrations.
-:::
+:::warning Security Trade-off Enabling cross-origin isolation prevents loading
+resources from other origins unless they explicitly opt-in with CORP headers.
+This can break third-party integrations. :::
 
 ## Usage Patterns
 
@@ -79,7 +77,7 @@ import { Worker, isMainThread, parentPort } from 'worker_threads';
 if (isMainThread) {
   const sharedBuffer = new SharedArrayBuffer(1024);
   const worker = new Worker(__filename, {
-    workerData: { sharedBuffer }
+    workerData: { sharedBuffer },
   });
 } else {
   const { sharedBuffer } = require('worker_threads').workerData;
@@ -119,11 +117,11 @@ const sharedBuffer = new SharedArrayBuffer(1024 * 1024);
 const processor = new SharedProcessor(sharedBuffer);
 
 // Multiple workers can operate on same memory
-workers.forEach(worker => {
+workers.forEach((worker) => {
   worker.postMessage({
     type: 'init',
     sharedBuffer,
-    processor: processor.ptr // WASM instance pointer
+    processor: processor.ptr, // WASM instance pointer
   });
 });
 ```
@@ -169,8 +167,9 @@ if (typeof SharedArrayBuffer !== 'undefined') {
 
 // ✅ Correct: Check both existence and isolation
 function canUseSharedArrayBuffer(): boolean {
-  return typeof SharedArrayBuffer !== 'undefined' &&
-         crossOriginIsolated === true;
+  return (
+    typeof SharedArrayBuffer !== 'undefined' && crossOriginIsolated === true
+  );
 }
 ```
 
@@ -183,7 +182,7 @@ fetch('https://external-api.com/data.json');
 // ✅ Need CORP header or use credentials: 'omit'
 fetch('https://external-api.com/data.json', {
   mode: 'cors',
-  credentials: 'omit'
+  credentials: 'omit',
 });
 ```
 

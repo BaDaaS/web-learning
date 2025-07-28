@@ -14,17 +14,20 @@ project.
 ## Development Setup
 
 1. **Fork and Clone**:
+
    ```bash
    git clone https://github.com/YOUR_USERNAME/web-learning.git
    cd web-learning
    ```
 
 2. **Install Dependencies**:
+
    ```bash
    make install
    ```
 
 3. **Start Development Server**:
+
    ```bash
    make dev
    ```
@@ -38,6 +41,7 @@ project.
 ### Making Changes
 
 1. **Create a Feature Branch**:
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
@@ -48,11 +52,13 @@ project.
    - Update navigation in `sidebars.ts` if needed
 
 3. **Preview Changes**:
+
    ```bash
    make dev
    ```
 
 4. **Run Quality Checks**:
+
    ```bash
    make check
    ```
@@ -83,19 +89,13 @@ Brief introduction paragraph.
 
 Your technical content here.
 
-<Callout type="good">
-This is a best practice example.
-</Callout>
+<Callout type="good">This is a best practice example.</Callout>
 
-<Question>
-How would you implement feature X?
-</Question>
+<Question>How would you implement feature X?</Question>
 
 <Expected>
-A good answer should include:
-- Key concept 1
-- Key concept 2
-- Specific implementation details
+  A good answer should include: - Key concept 1 - Key concept 2 - Specific
+  implementation details
 </Expected>
 
 ## Signals of Mastery
@@ -119,15 +119,11 @@ questions. Format:
 ```mdx
 # [Section] Interview Questions
 
-<Question>
-Specific technical question that probes understanding?
-</Question>
+<Question>Specific technical question that probes understanding?</Question>
 
 <Expected>
-What a strong answer looks like:
-- Key point 1
-- Key point 2
-- Advanced consideration
+  What a strong answer looks like: - Key point 1 - Key point 2 - Advanced
+  consideration
 </Expected>
 ```
 
@@ -232,6 +228,7 @@ Follow these strict guidelines:
 - **Clear descriptions**: Focus on "why" rather than "what"
 
 Good examples:
+
 ```
 Add SharedArrayBuffer security requirements documentation
 
@@ -240,6 +237,7 @@ differences. Includes interview questions and assessment criteria.
 ```
 
 Bad examples:
+
 ```
 ✨ Add SharedArrayBuffer docs 🚀
 
@@ -281,10 +279,12 @@ When working with Claude Code to develop this project:
 After making code modifications, run appropriate formatting commands:
 
 #### Markdown and MDX Files
+
 - **Format**: Run `make format-md` after modifying markdown/MDX files
 - **Check**: Run `make check-md` to verify formatting
 
 #### TypeScript and JavaScript Files
+
 - **Format**: Run `make format` after modifying TypeScript/JS files
 - **Check**: Run `make check-format` to verify formatting
 
@@ -325,6 +325,7 @@ If you need help:
 ## Recognition
 
 Contributors will be recognized in:
+
 - Project documentation
 - Release notes
 - Community acknowledgments
