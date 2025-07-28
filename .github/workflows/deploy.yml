@@ -30,6 +30,11 @@ jobs:
           node-version: 18
           cache: npm
 
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+
       - name: Install dependencies
         run: make install
 

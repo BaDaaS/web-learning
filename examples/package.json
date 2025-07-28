@@ -1,0 +1,15 @@
+{
+  "name": "web-learning-examples",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Compilable code examples for the web-learning documentation",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "typecheck-ts": "tsc --noEmit typescript-sdk/*.ts debugging/*.ts",
+    "typecheck-js": "tsc --checkJs --noEmit --allowJs cross-origin-security/*.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.7.2"
+  }
+}

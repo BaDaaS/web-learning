@@ -5,7 +5,17 @@
  * SDK that wraps a WebAssembly module, handling both browser and Node.js environments.
  */
 
-import init, { WasmModule } from './pkg/my_wasm_module';
+// Type definitions for the WASM module
+interface WasmModule {
+  process_data(data: Uint8Array): Promise<Uint8Array>;
+  free(): void;
+}
+
+// Mock init function for demonstration - in practice this would be from wasm-bindgen
+declare function init(wasmPath?: string): Promise<void>;
+declare const WasmModule: {
+  new (): WasmModule;
+};
 
 interface InitOptions {
   wasmPath?: string;

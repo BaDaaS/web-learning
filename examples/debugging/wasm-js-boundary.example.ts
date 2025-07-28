@@ -5,7 +5,14 @@
  * with the boundary between JavaScript/TypeScript and WebAssembly.
  */
 
-import type { WasmModule } from './pkg/my_wasm_module';
+// Import type definitions for the WASM module
+interface WasmModule {
+  process_data(data: Uint8Array): Uint8Array;
+  process_data_async(data: Uint8Array): Promise<Uint8Array>;
+  cache_size: number;
+  clear_cache(): void;
+  free(): void;
+}
 
 interface DebugConfig {
   enableLogging: boolean;
@@ -85,15 +92,17 @@ class WasmDebugger {
       return finalResult;
     } catch (error) {
       // Enhanced error logging for WASM boundary issues
-      console.error(`[WASM DEBUG] Error in ${functionName}:`, error);
+      const errorObj =
+        error instanceof Error ? error : new Error(String(error));
+      console.error(`[WASM DEBUG] Error in ${functionName}:`, errorObj);
       console.error('[WASM DEBUG] Arguments that caused error:', args);
-      console.error('[WASM DEBUG] Stack trace:', error.stack);
+      console.error('[WASM DEBUG] Stack trace:', errorObj.stack);
 
       // Check for common WASM boundary issues
-      this.diagnoseBoundaryError(functionName, args, error);
+      this.diagnoseBoundaryError(functionName, args, errorObj);
 
       // Update error stats
-      this.updateErrorStats(functionName, error as Error);
+      this.updateErrorStats(functionName, errorObj);
 
       throw error;
     }

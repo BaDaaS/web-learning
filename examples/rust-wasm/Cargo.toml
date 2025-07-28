@@ -1,0 +1,21 @@
+[package]
+name = "web-learning-rust-examples"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = { workspace = true }
+js-sys = { workspace = true }
+wasm-bindgen-futures = { workspace = true }
+console_error_panic_hook = { workspace = true }
+
+[dependencies.web-sys]
+workspace = true
+features = [
+  "console",
+  "Window",
+]
+

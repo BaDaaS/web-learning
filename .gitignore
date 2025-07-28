@@ -1,5 +1,6 @@
 # Dependencies
 /node_modules
+**/node_modules
 
 # Production
 /build
@@ -7,6 +8,11 @@
 # Generated files
 .docusaurus
 .cache-loader
+
+# Rust
+/target/
+**/target/
+Cargo.lock
 
 # Misc
 .DS_Store

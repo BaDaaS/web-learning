@@ -1,0 +1,16 @@
+# Ignore build artifacts
+build/
+.docusaurus/
+node_modules/
+
+# Ignore Rust build artifacts
+target/
+Cargo.lock
+
+# Ignore package lock files
+package-lock.json
+
+# Ignore generated files
+*.generated.*
+*.min.js
+*.min.css

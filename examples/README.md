@@ -65,9 +65,38 @@ This allows readers to:
 
 ## Testing Examples
 
-While the examples are designed to be compilable, they may require specific
-dependencies or environments. Consider creating a `package.json` or `Cargo.toml`
-in relevant subdirectories for examples that can be executed independently.
+All examples are designed to be compilable and are automatically checked in CI.
+You can compile them locally using:
+
+### TypeScript Examples
+
+```bash
+# From the project root
+make install-examples  # Install dependencies
+make compile-examples   # Compile all examples
+```
+
+Or manually:
+
+```bash
+cd examples
+npm install
+npm run typecheck
+```
+
+### Rust Examples
+
+```bash
+# From the project root
+cd examples/rust-wasm
+cargo check
+```
+
+### CI Integration
+
+Example compilation is automatically checked in the CI pipeline using the
+`make check-examples` target, which ensures all examples remain compilable with
+the latest dependencies.
 
 ## Contributing
 
