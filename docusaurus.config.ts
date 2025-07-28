@@ -61,6 +61,23 @@ const config: Config = {
         explicitSearchResultPath: true,
       },
     ],
+    function (context, options) {
+      return {
+        name: 'raw-loader-plugin',
+        configureWebpack(config, isServer, utils) {
+          return {
+            module: {
+              rules: [
+                {
+                  test: /\.example\.(ts|js|tsx|jsx|rs|toml|json)$/,
+                  use: 'raw-loader',
+                },
+              ],
+            },
+          };
+        },
+      };
+    },
   ],
 
   themes: ['@docusaurus/theme-mermaid'],

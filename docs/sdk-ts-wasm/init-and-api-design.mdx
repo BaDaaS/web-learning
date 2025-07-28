@@ -1,3 +1,90 @@
+import CodeExample from '@site/src/components/CodeBlock';
+
 # Init and API design
 
-Coming soon...
+This section covers the fundamental patterns for initializing TypeScript SDKs
+that wrap WebAssembly modules and designing APIs that provide a seamless
+developer experience.
+
+## Initialization Patterns
+
+When designing a TypeScript SDK that wraps a WebAssembly module, proper
+initialization is crucial for both performance and developer experience. The
+initialization phase typically involves loading the WASM module, setting up
+memory management, and configuring any threading or worker pools.
+
+<CodeExample
+  path="typescript-sdk/basic-initialization.example.ts"
+  language="typescript"
+  title="Basic SDK Initialization Pattern"
+  description="This example demonstrates a robust initialization pattern that handles both browser and Node.js environments, with proper error handling and state management."
+/>
+
+### Key Design Principles
+
+1. **Asynchronous Initialization** - WASM modules must be loaded asynchronously,
+   so design your API to handle this properly
+2. **Single Initialization** - Prevent multiple simultaneous initialization
+   attempts
+3. **Environment Detection** - Handle differences between browser and Node.js
+   environments
+4. **Resource Cleanup** - Provide clean destruction methods for proper resource
+   management
+
+## API Design Considerations
+
+When wrapping WASM functionality, consider these API design patterns:
+
+### 1. Factory Functions vs Class Constructors
+
+Factory functions often provide better ergonomics for async initialization:
+
+```typescript
+// Preferred: Factory function
+const sdk = await createSDK(options);
+
+// vs Class constructor requiring separate init
+const sdk = new SDK();
+await sdk.initialize(options);
+```
+
+### 2. Method Chaining and Fluent Interfaces
+
+Design APIs that feel natural to TypeScript developers:
+
+```typescript
+const result = await sdk
+  .configure({ threads: 4 })
+  .processData(inputData)
+  .withOptions({ validate: true });
+```
+
+### 3. Type Safety Across the Boundary
+
+Ensure type safety when crossing the JavaScript-WASM boundary:
+
+```typescript
+interface ProcessingOptions {
+  algorithm: 'fast' | 'accurate' | 'balanced';
+  maxMemory?: number;
+  validate?: boolean;
+}
+
+// TypeScript will catch invalid algorithm values
+await sdk.process(data, { algorithm: 'invalid' }); // ❌ Type error
+```
+
+## Error Handling Strategy
+
+WASM modules can fail in unique ways, so implement comprehensive error handling:
+
+- **Initialization Errors** - Module loading, memory allocation failures
+- **Runtime Errors** - Out of bounds access, invalid operations
+- **Resource Errors** - Memory exhaustion, thread pool saturation
+
+## Next Steps
+
+- Learn about [Memory Management](../rust-wasm/memory-and-limits) in WASM
+  contexts
+- Explore [Error Handling](./errors-and-cancellation) patterns
+- Review [Packaging](./packaging) strategies for distribution

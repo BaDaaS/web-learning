@@ -1,3 +1,94 @@
+import CodeExample from '@site/src/components/CodeBlock';
+
 # Worker pools
 
-Coming soon...
+Worker pools are essential for managing concurrent tasks efficiently in web
+applications, especially when working with CPU-intensive operations or
+WebAssembly modules that benefit from parallel processing.
+
+## Overview
+
+A worker pool manages a collection of Web Workers, distributing tasks among them
+to maximize CPU utilization while avoiding the overhead of creating and
+destroying workers for each task.
+
+## Implementation
+
+<CodeExample
+  path="workers-concurrency/worker-pool.example.ts"
+  language="typescript"
+  title="Complete Worker Pool Implementation"
+  description="A robust worker pool implementation with load balancing, error handling, timeout management, and comprehensive statistics tracking."
+/>
+
+## Key Features
+
+### 1. Load Balancing
+
+- Automatic distribution of tasks to available workers
+- Queue management for when all workers are busy
+- Prevention of worker starvation
+
+### 2. Error Handling
+
+- Worker crash recovery with automatic replacement
+- Task timeout management
+- Graceful degradation when workers fail
+
+### 3. Resource Management
+
+- Configurable pool size based on system capabilities
+- Proper cleanup and worker termination
+- Memory usage monitoring
+
+### 4. Performance Monitoring
+
+- Task execution time tracking
+- Worker utilization statistics
+- Queue length monitoring
+
+## Best Practices
+
+1. **Size the pool appropriately** - Usually `navigator.hardwareConcurrency` or
+   slightly less
+2. **Handle worker failures** - Always have a recovery strategy for crashed
+   workers
+3. **Implement timeouts** - Prevent tasks from hanging indefinitely
+4. **Monitor performance** - Track metrics to optimize pool configuration
+5. **Clean up resources** - Always call `destroy()` when the pool is no longer
+   needed
+
+## Integration with WebAssembly
+
+Worker pools are particularly effective when combined with WebAssembly modules
+for CPU-intensive tasks:
+
+```typescript
+// Example worker script for WASM processing
+// worker-wasm-processor.js
+import init, { process_data } from './pkg/my_wasm_module.js';
+
+let wasmInitialized = false;
+
+self.onmessage = async function (e) {
+  const { taskId, data } = e.data;
+
+  try {
+    if (!wasmInitialized) {
+      await init();
+      wasmInitialized = true;
+    }
+
+    const result = process_data(new Uint8Array(data));
+    self.postMessage({ taskId, result: Array.from(result) });
+  } catch (error) {
+    self.postMessage({ taskId, error: error.message });
+  }
+};
+```
+
+## Next Steps
+
+- Learn about [MessagePorts and Transferables](./messageports-and-transferables)
+- Explore [Pipelines and Backpressure](./pipelines-and-backpressure) handling
+- Review [Question Bank](./q-questions) for interview scenarios
