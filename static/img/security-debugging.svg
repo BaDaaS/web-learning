@@ -1,0 +1,31 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <circle cx="100" cy="100" r="90" fill="#f0f8ff" stroke="#dc2626" stroke-width="2"/>
+  
+  <!-- Security shield -->
+  <path d="M70 40 Q70 35 75 35 L125 35 Q130 35 130 40 L130 70 Q130 85 100 95 Q70 85 70 70 Z" fill="#dc2626"/>
+  <path d="M85 55 L95 65 L115 45" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
+  
+  <!-- CORS/Security elements -->
+  <rect x="40" y="110" width="30" height="15" fill="#f59e0b" rx="2"/>
+  <text x="55" y="121" fill="white" font-family="Arial, sans-serif" font-size="8" text-anchor="middle">CORS</text>
+  
+  <rect x="85" y="110" width="30" height="15" fill="#f59e0b" rx="2"/>
+  <text x="100" y="121" fill="white" font-family="Arial, sans-serif" font-size="8" text-anchor="middle">COEP</text>
+  
+  <rect x="130" y="110" width="30" height="15" fill="#f59e0b" rx="2"/>
+  <text x="145" y="121" fill="white" font-family="Arial, sans-serif" font-size="8" text-anchor="middle">COOP</text>
+  
+  <!-- Debug magnifying glass -->
+  <circle cx="140" cy="140" r="15" fill="none" stroke="#059669" stroke-width="3"/>
+  <path d="152 152 L165 165" stroke="#059669" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- Bug symbol -->
+  <ellipse cx="140" cy="140" rx="8" ry="6" fill="#dc2626"/>
+  <line x1="135" y1="137" x2="145" y2="143" stroke="white" stroke-width="1"/>
+  <line x1="135" y1="143" x2="145" y2="137" stroke="white" stroke-width="1"/>
+  
+  <!-- Boundary lines -->
+  <path d="M30 80 Q100 85 170 80" stroke="#6366f1" stroke-width="2" fill="none" stroke-dasharray="3,3"/>
+  <text x="100" y="175" fill="#6366f1" font-family="Arial, sans-serif" font-size="11" text-anchor="middle">Cross-Origin Security and Debugging</text>
+</svg>

@@ -1,0 +1,222 @@
+# SharedArrayBuffer & Cross-Origin Isolation
+
+SharedArrayBuffer is a powerful primitive for true memory sharing between
+JavaScript contexts, but it requires strict security measures due to
+Spectre-class timing attacks.
+
+## Security Requirements
+
+### COOP/COEP Headers
+
+SharedArrayBuffer is only available in **cross-origin isolated** contexts:
+
+```http
+Cross-Origin-Opener-Policy: same-origin
+Cross-Origin-Embedder-Policy: require-corp
+```
+
+### Checking Isolation Status
+
+```typescript
+// Check if SharedArrayBuffer is available
+if (typeof SharedArrayBuffer !== 'undefined' && crossOriginIsolated) {
+  console.log('SharedArrayBuffer is available');
+} else {
+  console.log('SharedArrayBuffer is NOT available');
+  console.log('Cross-origin isolated:', crossOriginIsolated);
+}
+```
+
+:::warning Security Trade-off
+Enabling cross-origin isolation prevents loading resources from other origins
+unless they explicitly opt-in with CORP headers. This can break third-party
+integrations.
+:::
+
+## Usage Patterns
+
+### Basic Memory Sharing
+
+```typescript
+// Main thread
+const sharedBuffer = new SharedArrayBuffer(1024);
+const sharedArray = new Int32Array(sharedBuffer);
+
+// Send to worker
+worker.postMessage({ sharedBuffer });
+
+// Worker thread
+self.onmessage = ({ data: { sharedBuffer } }) => {
+  const sharedArray = new Int32Array(sharedBuffer);
+
+  // Direct memory access - no copying!
+  sharedArray[0] = 42;
+};
+```
+
+### Atomics for Synchronization
+
+```typescript
+// Producer
+const buffer = new SharedArrayBuffer(16);
+const view = new Int32Array(buffer);
+
+// Atomic operations prevent race conditions
+Atomics.store(view, 0, 123);
+Atomics.notify(view, 0, 1); // Wake waiting workers
+
+// Consumer
+Atomics.wait(view, 0, 0); // Wait for change
+const value = Atomics.load(view, 0);
+```
+
+## Node.js Differences
+
+```typescript
+// Node.js: SharedArrayBuffer available by default
+import { Worker, isMainThread, parentPort } from 'worker_threads';
+
+if (isMainThread) {
+  const sharedBuffer = new SharedArrayBuffer(1024);
+  const worker = new Worker(__filename, {
+    workerData: { sharedBuffer }
+  });
+} else {
+  const { sharedBuffer } = require('worker_threads').workerData;
+  // Use shared buffer...
+}
+```
+
+## WASM Integration
+
+```rust
+// Rust side - using shared memory
+use wasm_bindgen::prelude::*;
+use js_sys::SharedArrayBuffer;
+
+#[wasm_bindgen]
+pub struct SharedProcessor {
+    memory: SharedArrayBuffer,
+}
+
+#[wasm_bindgen]
+impl SharedProcessor {
+    #[wasm_bindgen(constructor)]
+    pub fn new(memory: SharedArrayBuffer) -> SharedProcessor {
+        SharedProcessor { memory }
+    }
+
+    pub fn process(&self) -> Result<(), JsValue> {
+        // Process data directly in shared memory
+        Ok(())
+    }
+}
+```
+
+```typescript
+// TypeScript side
+const sharedBuffer = new SharedArrayBuffer(1024 * 1024);
+const processor = new SharedProcessor(sharedBuffer);
+
+// Multiple workers can operate on same memory
+workers.forEach(worker => {
+  worker.postMessage({
+    type: 'init',
+    sharedBuffer,
+    processor: processor.ptr // WASM instance pointer
+  });
+});
+```
+
+## Performance Considerations
+
+### Memory Access Patterns
+
+```typescript
+// ❌ Bad: Random access patterns
+for (let i = 0; i < array.length; i++) {
+  array[Math.floor(Math.random() * array.length)] = i;
+}
+
+// ✅ Good: Sequential access patterns
+for (let i = 0; i < array.length; i++) {
+  array[i] = i;
+}
+```
+
+### Cache Line Awareness
+
+```typescript
+// Each worker operates on separate cache lines (64 bytes)
+const CACHE_LINE_SIZE = 64;
+const WORKER_OFFSET = CACHE_LINE_SIZE / 4; // 16 Int32 elements
+
+workers.forEach((worker, index) => {
+  const startIndex = index * WORKER_OFFSET;
+  worker.postMessage({ startIndex, length: WORKER_OFFSET });
+});
+```
+
+## Common Gotchas
+
+### 1. Detection vs Availability
+
+```typescript
+// ❌ Wrong: Just checking existence
+if (typeof SharedArrayBuffer !== 'undefined') {
+  // May still throw if not cross-origin isolated!
+}
+
+// ✅ Correct: Check both existence and isolation
+function canUseSharedArrayBuffer(): boolean {
+  return typeof SharedArrayBuffer !== 'undefined' &&
+         crossOriginIsolated === true;
+}
+```
+
+### 2. Resource Loading with COEP
+
+```typescript
+// ❌ Will fail with COEP: require-corp
+fetch('https://external-api.com/data.json');
+
+// ✅ Need CORP header or use credentials: 'omit'
+fetch('https://external-api.com/data.json', {
+  mode: 'cors',
+  credentials: 'omit'
+});
+```
+
+### 3. Memory Growth
+
+```typescript
+// ❌ SharedArrayBuffer cannot grow
+const buffer = new SharedArrayBuffer(1024);
+// buffer.grow(2048); // ❌ This doesn't exist!
+
+// ✅ Pre-allocate sufficient memory or reallocate
+function reallocateShared(oldBuffer: SharedArrayBuffer, newSize: number) {
+  const newBuffer = new SharedArrayBuffer(newSize);
+  const oldView = new Uint8Array(oldBuffer);
+  const newView = new Uint8Array(newBuffer);
+  newView.set(oldView);
+  return newBuffer;
+}
+```
+
+## Signals of Mastery
+
+- Understands COOP/COEP requirement and trade-offs
+- Can explain the Spectre vulnerability connection
+- Knows difference between Node.js and browser availability
+- Uses Atomics correctly for synchronization
+- Considers cache line alignment for performance
+- Handles resource loading restrictions with COEP
+
+## Red Flags
+
+- Assumes SharedArrayBuffer is always available
+- Doesn't understand cross-origin isolation requirements
+- Uses SharedArrayBuffer without Atomics for synchronization
+- Ignores COEP impact on third-party resources
+- Confuses SharedArrayBuffer with regular ArrayBuffer transfer
